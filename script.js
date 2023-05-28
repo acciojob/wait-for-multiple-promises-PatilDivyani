@@ -34,7 +34,7 @@ tablebody.innerHTML = `
         <td>Loading...</td>
 		  </tr>`;
 
-let result = Promise.all(array);
+let results = Promise.all(array);
 results.then(()=>{
   console.log(results)
   tablebody.innerHTML = '';
