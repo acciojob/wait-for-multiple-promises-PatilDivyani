@@ -1,68 +1,73 @@
-//your JS code here. If required.
-let array = [];
+let promiseArray = [];
+// { name: "Promise 1" , timeTaaken: "1"}
+
+let minTime , maxTime;
+function addPromiseStatus(name,start, end) {
+if(!minTime){
+  minTime = start;
+}
+maxTime = end;
+  promiseArray.push({ name ,time: (end-start)/1000 } );
+}
+
+let start1 = new Date().getTime(); 
+//milli sec  Jan1 1970
 let prom1 = new Promise((resolve , reject)=>{
 
   setTimeout(()=>{
     resolve();
-  }, 1000);
+    let end1 = new Date().getTime(); 
+    addPromiseStatus("Promise 1", start1, end1);
+  }, 2000);
 
 });
-array.push(prom1);
 
+let start2 = new Date().getTime(); 
 let prom2 = new Promise((resolve , reject)=>{
   
   setTimeout(()=>{
     resolve();
-  }, 2000);
+    let end2 = new Date().getTime(); 
+    addPromiseStatus("Promise 2", start2, end2);
+  }, 1000);
 
 });
-array.push(prom2);
 
+let start3 = new Date().getTime(); 
 let prom3 = new Promise((resolve , reject)=>{
   
   setTimeout(()=>{
     resolve();
+    let end3 = new Date().getTime(); 
+    addPromiseStatus("Promise 3", start3, end3);
   }, 3000);
 
 });
-array.push(prom3);
-      
-let tablebody = document.getElementById("output");
-tablebody.innerHTML = `
-      <tr>
-        <td>Loading...</td>
-        <td>Loading...</td>
-		  </tr>`;
 
-let results = Promise.all(array);
+let results = Promise.all([prom1,prom2,prom3]);
 results.then(()=>{
-  console.log(results)
+  addToTable(promiseArray);
+})
+
+let tablebody = document.getElementById("output");
+
+function addToTable(list) {
   tablebody.innerHTML = '';
+  for(let i = 0 ; i< list.length; i++){
+    let tr = document.createElement("tr");
+    tr.innerHTML = `
+            <td>${list[i].name}</td>
+            <td>${list[i].time.toFixed(0)}</td>`
 
-  for(let i = 0 ; i< results.length; i++){
-    let row = document.createElement("tr");
-    let promiseCell = document.createElement("td");
-    promiseCell.innerText = "Promise " + (i + 1);
-
-    let timeCell = document.createElement("td");
-    timeCell.innerText = results[i];
-    row.appendChild(promiseCell);
-    row.appendChild(timeCell);
-    tablebody.appendChild(row);
+    tablebody.append(tr);
   }
-});
+  // fourth row
+  let tr = document.createElement("tr");
+  tr.innerHTML = `
+              <td>Total</td>
+              <td>${(maxTime-minTime)/1000}</td>`;
+  tablebody.appendChild(tr);
+}
 
-//  // Add the "Total" row
-//     const totalRow = document.createElement('tr');
-//     const totalCell = document.createElement('td');
-//     totalCell.textContent = 'Total';
-//     const totalTimeCell = document.createElement('td');
-//     const totalTime = results.reduce((acc, time) => acc + time, 0);
-//     totalTimeCell.textContent = totalTime.toFixed(3);
-//     totalRow.appendChild(totalCell);
-//     totalRow.appendChild(totalTimeCell);
-//     tableBody.appendChild(totalRow);
- 
-//   .catch((error) => {
-//     console.error(error);
-//   });
+
+      
